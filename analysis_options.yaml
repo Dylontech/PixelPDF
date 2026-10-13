@@ -1,0 +1,8 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    # Fuente monolítico de referencia: contiene TODO el MVP en un solo archivo
+    # con marcadores. El código real vive repartido en lib/ y duplicarlo aquí
+    # solo generaría diagnósticos repetidos.
+    - pixel_pdf_codigo_completo.dart

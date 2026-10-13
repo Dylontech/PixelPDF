@@ -1,0 +1,56 @@
+name: pixel_pvr
+description: "Escáner de documentos móvil con estética retro pixel art (Clean Architecture + MVVM)."
+publish_to: "none"
+version: 0.1.0+1
+
+# NOTA: share_plus ^13 exige Flutter >= 3.38.1 / Dart >= 3.10.
+# Si el SDK instalado es más antiguo, `flutter pub get` lo dirá y habrá que
+# o bien actualizar Flutter, o bien bajar a share_plus ^10 y ajustar
+# lib/core/services/compartir_service.dart (único archivo que usa su API).
+environment:
+  sdk: ^3.10.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Estado / inyección
+  provider: ^6.1.2
+
+  # Persistencia local (Hive sin codegen: Box<String> con JSON)
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # Escáner nativo (ML Kit en Android, VisionKit en iOS). Solo Android/iOS.
+  cunning_document_scanner: ^3.0.3
+
+  # Recorte manual (uCrop en Android, TOCropViewController en iOS)
+  image_cropper: ^13.0.0
+
+  # Filtros de imagen (Dart puro, funciona en isolate)
+  image: ^4.2.0
+
+  # Generación de PDF y almacenamiento
+  pdf: ^3.11.1
+  path_provider: ^2.1.4
+
+  # Compartir el archivo exportado
+  share_plus: ^13.3.1
+  cross_file: ^0.3.4
+
+  # Tipografías retro
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Las fuentes van empaquetadas para que la app funcione sin conexión en el
+  # primer arranque: google_fonts busca el archivo por nombre dentro de los
+  # assets antes de intentar descargarlo.
+  assets:
+    - assets/fonts/
