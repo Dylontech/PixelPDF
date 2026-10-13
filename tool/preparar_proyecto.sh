@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-#  Pixel PVR — preparación del proyecto
+#  PixelPDF — preparación del proyecto
 #
 #  Hace las tres cosas que no se pueden dejar "escritas de antemano" porque
 #  dependen del SDK de Flutter instalado:
@@ -21,9 +21,9 @@ cd "$RAIZ"
 
 NOMBRE_PROYECTO="pixel_pvr"
 ORG="com.dylontech.pixelpvr"
-ETIQUETA="Pixel PVR"
+ETIQUETA="PixelPDF"
 
-echo "==> Pixel PVR: preparando proyecto en $RAIZ"
+echo "==> PixelPDF: preparando proyecto en $RAIZ"
 
 # -----------------------------------------------------------------------------
 # 0. ¿Está Flutter?
@@ -100,7 +100,10 @@ insertar_antes() {
     echo "    ! patrón no encontrado en $(basename "$archivo") -> revisa a mano: $desc"
     return 0
   fi
-  perl -0pi -e "s{\Q$patron\E}{$texto\Q$patron\E}" "$archivo"
+  # OJO: \Q...\E sólo debe envolver el PATRÓN. Si se usa también en el
+  # reemplazo, Perl aplica quotemeta al texto insertado y escribe cosas como
+  # "<\/resources>", que rompe el XML y hace fallar el build de Android.
+  perl -0pi -e "s{\Q$patron\E}{$texto$patron}" "$archivo"
   echo "    + $desc"
 }
 
@@ -179,7 +182,7 @@ if [[ -d ios ]]; then
     if grep -q 'NSCameraUsageDescription' "$PLIST"; then
       echo "    = ya aplicado: claves de Info.plist"
     else
-      perl -0pi -e 's{(?:\n?)(</dict>[ \t]*\n</plist>)}{\n\t<key>NSCameraUsageDescription</key>\n\t<string>Pixel PVR necesita la camara para escanear documentos.</string>\n\t<key>NSPhotoLibraryUsageDescription</key>\n\t<string>Pixel PVR necesita acceso a tus fotos para importar documentos.</string>\n\t<key>CFBundleAllowMixedLocalizations</key>\n\t<true/>\n$1}' "$PLIST"
+      perl -0pi -e 's{(?:\n?)(</dict>[ \t]*\n</plist>)}{\n\t<key>NSCameraUsageDescription</key>\n\t<string>PixelPDF necesita la camara para escanear documentos.</string>\n\t<key>NSPhotoLibraryUsageDescription</key>\n\t<string>PixelPDF necesita acceso a tus fotos para importar documentos.</string>\n\t<key>CFBundleAllowMixedLocalizations</key>\n\t<true/>\n$1}' "$PLIST"
       echo "    + NSCameraUsageDescription / NSPhotoLibraryUsageDescription / CFBundleAllowMixedLocalizations"
     fi
   fi

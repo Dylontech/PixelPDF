@@ -1,4 +1,4 @@
-import 'package:cross_file/cross_file.dart';
+// XFile lo reexporta share_plus, no hace falta depender de cross_file.
 import 'package:flutter/widgets.dart';
 import 'package:share_plus/share_plus.dart';
 

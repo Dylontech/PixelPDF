@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:pixel_pvr/core/services/compartir_service.dart';
+import 'package:pixel_pvr/core/theme/pixel_colors.dart';
+import 'package:pixel_pvr/core/theme/pixel_theme.dart';
+import 'package:pixel_pvr/core/utils/formatters.dart';
+import 'package:pixel_pvr/core/widgets/pixel_box.dart';
+import 'package:pixel_pvr/core/widgets/pixel_button.dart';
+import 'package:pixel_pvr/core/widgets/pixel_dialog.dart';
+import 'package:pixel_pvr/features/editor/data/services/image_processing_service.dart';
+import 'package:pixel_pvr/features/editor/presentation/viewmodels/editor_viewmodel.dart';
+import 'package:pixel_pvr/features/export/domain/usecases/exportar_documento.dart';
+import 'package:pixel_pvr/features/vault/domain/entities/documento_escaneado.dart';
 import 'package:provider/provider.dart';
-
-import '../../../core/services/compartir_service.dart';
-import '../../../core/theme/pixel_colors.dart';
-import '../../../core/theme/pixel_theme.dart';
-import '../../../core/utils/formatters.dart';
-import '../../../core/widgets/pixel_box.dart';
-import '../../../core/widgets/pixel_button.dart';
-import '../../../core/widgets/pixel_dialog.dart';
-import '../../../export/domain/usecases/exportar_documento.dart';
-import '../../../vault/domain/entities/documento_escaneado.dart';
-import '../../data/services/image_processing_service.dart';
-import '../viewmodels/editor_viewmodel.dart';
 
 class EditorPage extends StatelessWidget {
   const EditorPage({super.key, required this.rutaImagen});

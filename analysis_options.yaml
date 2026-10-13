@@ -6,3 +6,6 @@ analyzer:
     # con marcadores. El código real vive repartido en lib/ y duplicarlo aquí
     # solo generaría diagnósticos repetidos.
     - pixel_pdf_codigo_completo.dart
+    - build/**
+    - android/**
+    - ios/**

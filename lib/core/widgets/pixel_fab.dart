@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pixel_pvr/core/theme/pixel_colors.dart';
 
-import '../theme/pixel_colors.dart';
 import 'pixel_box.dart';
 
 /// Botón flotante con forma de botón de consola (ícono de gamepad).
@@ -37,11 +37,7 @@ class _PixelFabState extends State<PixelFab> {
               width: 52,
               height: 52,
               child: Center(
-                child: Icon(
-                  Icons.sports_esports,
-                  size: 34,
-                  color: Colors.black,
-                ),
+                child: Icon(Icons.photo_camera, size: 34, color: Colors.black),
               ),
             ),
           ),

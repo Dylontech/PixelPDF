@@ -1,9 +1,6 @@
-import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
-
-import '../../../vault/domain/entities/documento_escaneado.dart';
+import 'package:pixel_pvr/features/vault/domain/entities/documento_escaneado.dart';
 
 /// Argumentos serializables para los isolates (`compute`).
 class _FiltroParams {

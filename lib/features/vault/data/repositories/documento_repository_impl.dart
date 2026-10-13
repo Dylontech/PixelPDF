@@ -1,7 +1,7 @@
-import '../../../core/services/file_storage_service.dart';
-import '../../vault/domain/entities/documento_escaneado.dart';
-import '../../vault/domain/repositories/documento_repository.dart';
-import '../datasources/documento_local_datasource.dart';
+import 'package:pixel_pvr/core/services/file_storage_service.dart';
+import 'package:pixel_pvr/features/vault/data/datasources/documento_local_datasource.dart';
+import 'package:pixel_pvr/features/vault/domain/entities/documento_escaneado.dart';
+import 'package:pixel_pvr/features/vault/domain/repositories/documento_repository.dart';
 
 class DocumentoRepositoryImpl implements DocumentoRepository {
   DocumentoRepositoryImpl(this._local, this._storage);

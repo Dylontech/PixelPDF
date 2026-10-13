@@ -1,8 +1,7 @@
 import 'dart:convert';
 
 import 'package:hive/hive.dart';
-
-import '../../domain/entities/documento_escaneado.dart';
+import 'package:pixel_pvr/features/vault/domain/entities/documento_escaneado.dart';
 
 /// Persistencia en Hive guardando cada documento como JSON (String).
 /// Sin build_runner ni TypeAdapters: fácil de migrar a Isar después.

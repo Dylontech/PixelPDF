@@ -1,4 +1,4 @@
-# Pixel PVR
+# PixelPDF
 
 Escáner de documentos móvil con estética **retro pixel art** (8/16 bits).
 Flutter + Clean Architecture + MVVM, con persistencia local en Hive y el
@@ -16,12 +16,17 @@ está en [`PIXEL_PDF_ANOTACIONES.md`](PIXEL_PDF_ANOTACIONES.md).
 | Código de la app (`lib/`, 23 archivos por feature y capa) | ✅ escrito |
 | Pruebas (`test/`, 6 archivos) | ✅ escritas |
 | Dependencias (`pubspec.yaml`) y fuentes en `assets/fonts/` | ✅ listo |
-| Esqueleto de plataformas (`android/`, `ios/`) | ⏳ lo genera `flutter create` |
-| Verificación (`analyze`, `test`, `build apk`, `run`) | ⏳ pendiente: **este equipo no tiene el SDK de Flutter** |
+| Esqueleto de plataformas (`android/`, `ios/`) | ✅ generado |
+| `flutter analyze` | ✅ **No issues found!** |
+| `flutter test` | ✅ **36 tests, todos en verde** |
+| `flutter build apk --debug` | ✅ APK generado (170 MB) |
+| Prueba en dispositivo físico | ⏳ requiere conectar un teléfono |
+| iOS | ⏳ solo configuración (compilar requiere macOS) |
 
-El paso que falta se resuelve ejecutando un único script (ver abajo). No se
-generó antes porque `flutter create` escribe cientos de archivos dependientes de
-la versión del SDK, y este equipo no tiene ninguno instalado.
+Entorno con el que se verificó: **Flutter 3.47.7 stable**, Android SDK 36.0.0
+(plataforma `android-36` + `build-tools 36.0.0`), Java 21.
+El manifiesto dentro del APK confirma `minSdkVersion 24`, `targetSdkVersion 36`,
+el permiso de cámara, la etiqueta «PixelPDF» y la actividad de uCrop.
 
 ---
 
@@ -34,10 +39,9 @@ la versión del SDK, y este equipo no tiene ninguno instalado.
 - **Dispositivo Android físico** con Google Play Services: el escáner ML Kit no
   funciona de forma fiable en emulador.
 
-> ⚠️ Espacio en disco: el SDK de Flutter más los artefactos de Android, las
-> cachés de Gradle y las salidas de build ocupan del orden de **3 GB**. En este
-> equipo quedaban 4.2 GB libres (disco al 99 %), así que conviene liberar espacio
-> antes de instalar.
+> 📦 Ocupación en disco: el SDK de Flutter, las cachés de Gradle y el Android
+> SDK suman del orden de **5 GB**. Todo eso ya está instalado y funcionando en
+> este equipo (ver «Notas del entorno de compilación» al final).
 
 ---
 
@@ -59,15 +63,18 @@ Ese script:
 5. Ejecuta `flutter pub get`.
 
 Es **idempotente**: se puede volver a ejecutar sin duplicar nada, y si no
-encuentra un patrón esperado avisa en lugar de corromper el archivo.
+encuentra un patrón esperado avisa en lugar de corromper el archivo. **Ya se
+ejecutó en este workspace**, así que hoy `android/` e `ios/` existen y el
+proyecto está verificado; solo hace falta reejecutarlo si se regenera el
+esqueleto.
 
-Después:
+Después (el build necesita las variables de entorno del apartado de notas):
 
 ```bash
-flutter analyze          # debe salir sin errores
-flutter test             # 6 archivos de pruebas
+flutter analyze          # ya en 0 issues
+flutter test             # 36 tests
 flutter build apk --debug
-flutter run -d <dispositivo>
+flutter run -d <dispositivo>   # con un teléfono conectado por USB
 ```
 
 ---
@@ -81,7 +88,7 @@ flutter run -d <dispositivo>
 | Android | `<uses-permission android:name="android.permission.CAMERA"/>` | El escáner nativo abre la cámara. |
 | Android | `UCropActivity` con `android:theme="@style/Ucrop.CropTheme"` | `image_cropper` ≥ 9 requiere declarar la actividad y usar un tema propio (migración de la v9.0.0). |
 | Android | `res/values/styles.xml` con `Ucrop.CropTheme` | El estilo que referencia la actividad anterior. |
-| Android | `android:label="Pixel PVR"` | Nombre visible de la app. |
+| Android | `android:label="PixelPDF"` | Nombre visible de la app. |
 | Android | (no aplicado) `values-v35/styles.xml` | `image_cropper` 10 la revirtió: **no debe existir**. |
 | iOS | `NSCameraUsageDescription`, `NSPhotoLibraryUsageDescription` | iOS termina el proceso si se pide la cámara sin esta clave. |
 | iOS | `CFBundleAllowMixedLocalizations` | Para que el escáner y la hoja de compartir salgan en el idioma del sistema. |
@@ -109,6 +116,26 @@ manifest. La plantilla de Flutter no los declara, así que no hay choque; si alg
 día añades reglas de backup propias, el build fallará pidiendo
 `tools:replace="android:dataExtractionRules,android:fullBackupContent"` en la
 etiqueta `<application>`.
+
+---
+
+## Logo e iconos de lanzador
+
+El logo es **provisional** y vive en `assets/Logo/`. Se referencia desde un único
+sitio, `lib/core/pixel_assets.dart`, así que sustituirlo es cambiar una línea.
+
+- En la interfaz aparece en la cabecera del vault (`AppBar`) y en el estado vacío
+  («INSERT COIN»).
+- Es un **JPG con fondo blanco**, así que el icono del lanzador sale con ese
+  fondo. Para un icono limpio conviene sustituirlo por un PNG 1024×1024 con
+  transparencia y volver a generarlos.
+- Los iconos de Android e iOS se generan con:
+
+```bash
+dart run flutter_launcher_icons
+```
+
+La configuración está en el bloque `flutter_launcher_icons:` del `pubspec.yaml`.
 
 ---
 
@@ -168,10 +195,10 @@ referencia del que se repartió el código; está excluido del análisis en
 
 ## Qué falta por verificar
 
-Nada de esto se pudo comprobar en este equipo porque no hay SDK de Flutter:
-
-1. `flutter analyze` / `flutter test` / `flutter build apk --debug`.
-2. Ejecución en dispositivo físico. Lista de comprobación manual:
+1. `flutter analyze` (**0 issues**), `flutter test` (**36 tests en verde**) y
+   `flutter build apk --debug` (**APK generado**) ya están comprobados.
+2. **Ejecución en dispositivo físico**: pendiente, no hay ningún teléfono
+   conectado (`adb devices` no lista nada). Lista de comprobación manual:
    1. Estado vacío «INSERT COIN»; 2. el FAB abre el escáner; 3. captura con
    detección de bordes; 4. el editor muestra la vista previa; 5. los 5 filtros
    cambian la imagen; 6. volver a un filtro ya usado es instantáneo (caché);
@@ -181,6 +208,39 @@ Nada de esto se pudo comprobar en este equipo porque no hay SDK de Flutter:
    muestra miniatura/formato/fecha, BORRAR la elimina y el vault sobrevive al
    cierre de la app.
 3. iOS: solo está configurado; compilar requiere macOS.
+
+Lo que hizo falta corregir para llegar a cero errores:
+
+- Las rutas de import se pasaron a `package:pixel_pvr/...`: las relativas
+  profundas (`../../../`) estaban mal calculadas y producían 99 errores.
+- `GoogleFonts.pressStart2P` → **`pressStart2p`** (así se llama el método
+  generado en google_fonts 6.3.3).
+- `CunningDocumentScannerException.message` no es nulable: sobraba el `??`.
+- `share_plus` reexporta `XFile`, así que la dependencia `cross_file` del
+  `pubspec.yaml` se eliminó.
+
+### Notas del entorno de compilación
+
+- Flutter vive en `~/development/flutter` (añadido al `PATH` en `~/.bashrc`).
+- El Android SDK de `/opt/android-sdk` es de **root** y no se puede escribir, y
+  su `sdkmanager` (del paquete `tools`) **no funciona con Java 21**
+  (`NoClassDefFoundError: javax/xml/bind/annotation/XmlSchema`). Por eso se
+  instaló un SDK propio y escribible en `~/Android/Sdk` con las *command-line
+  tools* modernas:
+  `~/Android/Sdk/cmdline-tools/latest/bin/sdkmanager`.
+- Variables que necesita el build: `JAVA_HOME=/usr/lib/jvm/java-21-openjdk` y
+  `ANDROID_HOME=~/Android/Sdk`.
+- La primera compilación descarga Gradle, AGP y el NDK r28c (~2 GB repartidos
+  entre `~/.gradle` y `~/Android/Sdk`) y tarda unos 5 minutos; después, ~2.
+
+### Advertencias que no son problemas
+
+- **`ios/Podfile` no existe**: Flutter 3.47 usa Swift Package Manager y ya no lo
+  genera; el script lo detecta, avisa y continúa. Si algún día aparece, el script
+  le descomenta `platform :ios, '13.0'`.
+- **Chrome no encontrado** en `flutter doctor`: solo afecta a la compilación web,
+  que este proyecto no soporta (`cunning_document_scanner` e `image_cropper` no
+  existen ni en web ni en escritorio).
 
 ### Riesgos conocidos al primer build
 
@@ -202,5 +262,6 @@ Multipágina, renombrado, búsqueda, guardado en galería, B/N adaptativo, OCR y
 perspectiva manual con OpenCV quedan fuera de esta entrega. Están listados con su
 camino de mejora en la sección 9 de [`PIXEL_PDF_ANOTACIONES.md`](PIXEL_PDF_ANOTACIONES.md).
 
-> Nota: la carpeta se llama `PixelPDF` pero el paquete y la app se llaman
-> `pixel_pvr` / «Pixel PVR», como el código y la especificación originales.
+> Nota: el nombre visible de la app es **PixelPDF**; el paquete Dart sigue
+> llamándose `pixel_pvr` (renombrarlo obligaría a tocar los 25 imports, el
+> `applicationId` de Android, `MainActivity` y el bundle de iOS).

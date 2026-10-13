@@ -6,7 +6,7 @@ import 'package:pdf/widgets.dart' as pw;
 class PdfExportService {
   /// Genera un PDF A4 con la imagen centrada y ajustada (sin deformarla).
   Future<Uint8List> crearPdf(Uint8List jpgBytes) async {
-    final documento = pw.Document(title: 'Pixel PVR', creator: 'Pixel PVR');
+    final documento = pw.Document(title: 'PixelPDF', creator: 'PixelPDF');
     final imagen = pw.MemoryImage(jpgBytes);
 
     documento.addPage(

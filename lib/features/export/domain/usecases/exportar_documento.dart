@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
-import '../../../core/services/file_storage_service.dart';
-import '../../../editor/data/services/image_processing_service.dart';
-import '../../../vault/domain/entities/documento_escaneado.dart';
-import '../../../vault/domain/repositories/documento_repository.dart';
-import '../../data/services/pdf_export_service.dart';
+import 'package:pixel_pvr/core/services/file_storage_service.dart';
+import 'package:pixel_pvr/features/editor/data/services/image_processing_service.dart';
+import 'package:pixel_pvr/features/export/data/services/pdf_export_service.dart';
+import 'package:pixel_pvr/features/vault/domain/entities/documento_escaneado.dart';
+import 'package:pixel_pvr/features/vault/domain/repositories/documento_repository.dart';
 
 /// Caso de uso: convierte → guarda archivo → guarda miniatura → registra.
 class ExportarDocumento {

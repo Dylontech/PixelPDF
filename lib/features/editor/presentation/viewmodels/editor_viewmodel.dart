@@ -1,12 +1,10 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
-
-import '../../../core/utils/formatters.dart';
-import '../../../export/domain/usecases/exportar_documento.dart';
-import '../../../vault/domain/entities/documento_escaneado.dart';
-import '../../data/services/image_processing_service.dart';
+import 'package:pixel_pvr/core/utils/formatters.dart';
+import 'package:pixel_pvr/features/editor/data/services/image_processing_service.dart';
+import 'package:pixel_pvr/features/export/domain/usecases/exportar_documento.dart';
+import 'package:pixel_pvr/features/vault/domain/entities/documento_escaneado.dart';
 
 class EditorViewModel extends ChangeNotifier {
   EditorViewModel({

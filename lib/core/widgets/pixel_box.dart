@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../theme/pixel_colors.dart';
+import 'package:pixel_pvr/core/theme/pixel_colors.dart';
 
 /// Contenedor con esquinas "escalonadas", borde grueso y sombra dura offset.
 /// Es la pieza base de toda la UI (tarjetas, botones, diálogos, chips).

@@ -1,4 +1,4 @@
-/// Utilidades de formato para la interfaz (fechas, tamaños, nombres).
+// Utilidades de formato para la interfaz (fechas, tamaños, nombres).
 
 String formatearFecha(DateTime d) {
   String dos(int n) => n.toString().padLeft(2, '0');

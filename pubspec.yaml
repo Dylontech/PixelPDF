@@ -34,9 +34,8 @@ dependencies:
   pdf: ^3.11.1
   path_provider: ^2.1.4
 
-  # Compartir el archivo exportado
+  # Compartir el archivo exportado (XFile lo reexporta share_plus)
   share_plus: ^13.3.1
-  cross_file: ^0.3.4
 
   # Tipografías retro
   google_fonts: ^6.2.1
@@ -45,6 +44,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  # Genera los iconos de lanzador desde el logo (ver el bloque al final).
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
@@ -54,3 +55,15 @@ flutter:
   # assets antes de intentar descargarlo.
   assets:
     - assets/fonts/
+    - assets/Logo/
+
+# Iconos de lanzador a partir del logo provisional de assets/Logo/.
+# Se regeneran con:  dart run flutter_launcher_icons
+# (el logo es un JPG con fondo blanco; para un icono con transparencia hay que
+# sustituirlo por un PNG y volver a ejecutar el comando).
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/Logo/IMG_20261012_224236.jpg"
+  remove_alpha_ios: true
+  background_color_ios: "#14122B"

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pixel_pvr/core/theme/pixel_colors.dart';
+import 'package:pixel_pvr/core/theme/pixel_theme.dart';
 
-import '../theme/pixel_colors.dart';
-import '../theme/pixel_theme.dart';
 import 'pixel_box.dart';
 
 /// Diálogo retro: caja escalonada, título en Press Start 2P y acciones como

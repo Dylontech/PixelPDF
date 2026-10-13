@@ -1,4 +1,4 @@
-/// Entidad de dominio (pura, sin dependencias de Flutter/Hive).
+// Entidad de dominio (pura, sin dependencias de Flutter/Hive).
 
 enum FormatoExportacion {
   pdf,

@@ -1,20 +1,20 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:pixel_pvr/core/pixel_assets.dart';
+import 'package:pixel_pvr/core/services/compartir_service.dart';
+import 'package:pixel_pvr/core/theme/pixel_colors.dart';
+import 'package:pixel_pvr/core/theme/pixel_theme.dart';
+import 'package:pixel_pvr/core/utils/formatters.dart';
+import 'package:pixel_pvr/core/widgets/pixel_box.dart';
+import 'package:pixel_pvr/core/widgets/pixel_button.dart';
+import 'package:pixel_pvr/core/widgets/pixel_dialog.dart';
+import 'package:pixel_pvr/core/widgets/pixel_fab.dart';
+import 'package:pixel_pvr/features/editor/presentation/pages/editor_page.dart';
+import 'package:pixel_pvr/features/scanner/data/services/escaner_service.dart';
+import 'package:pixel_pvr/features/vault/domain/entities/documento_escaneado.dart';
+import 'package:pixel_pvr/features/vault/presentation/viewmodels/vault_viewmodel.dart';
 import 'package:provider/provider.dart';
-
-import '../../../core/services/compartir_service.dart';
-import '../../../core/theme/pixel_colors.dart';
-import '../../../core/theme/pixel_theme.dart';
-import '../../../core/utils/formatters.dart';
-import '../../../core/widgets/pixel_box.dart';
-import '../../../core/widgets/pixel_button.dart';
-import '../../../core/widgets/pixel_dialog.dart';
-import '../../../core/widgets/pixel_fab.dart';
-import '../../../editor/presentation/pages/editor_page.dart';
-import '../../../scanner/data/services/escaner_service.dart';
-import '../../domain/entities/documento_escaneado.dart';
-import '../viewmodels/vault_viewmodel.dart';
 
 class VaultPage extends StatelessWidget {
   const VaultPage({super.key});
@@ -56,7 +56,18 @@ class VaultPage extends StatelessWidget {
     final vm = context.watch<VaultViewModel>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('PIXEL VAULT')),
+      appBar: AppBar(
+        title: const Text('PIXEL VAULT'),
+        // El logo provisional, pequeño, siempre visible en la cabecera.
+        leading: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Image.asset(
+            PixelAssets.logo,
+            fit: BoxFit.contain,
+            filterQuality: FilterQuality.none,
+          ),
+        ),
+      ),
       floatingActionButton: PixelFab(onPressed: () => _escanear(context)),
       body: SafeArea(
         child: vm.cargando
@@ -168,10 +179,20 @@ class _EstadoVacio extends StatelessWidget {
                 style: PixelTheme.titulo(size: 14, color: PixelColors.amarillo),
               ),
               const SizedBox(height: 16),
-              const Icon(
-                Icons.sports_esports,
-                size: 56,
-                color: PixelColors.magenta,
+              // Logo provisional: al ser un JPG con fondo blanco se enmarca
+              // como una "pegatina" sobre el panel oscuro.
+              PixelBox(
+                color: PixelColors.superficieAlta,
+                pixel: 3,
+                shadow: 3,
+                padding: const EdgeInsets.all(6),
+                child: Image.asset(
+                  PixelAssets.logo,
+                  width: 88,
+                  height: 88,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.none,
+                ),
               ),
               const SizedBox(height: 16),
               Text(
@@ -259,7 +280,7 @@ class _TarjetaDocumento extends StatelessWidget {
                   File(doc.rutaMiniatura),
                   fit: BoxFit.cover,
                   filterQuality: FilterQuality.none,
-                  errorBuilder: (_, __, ___) => const Icon(
+                  errorBuilder: (_, _, _) => const Icon(
                     Icons.broken_image,
                     color: PixelColors.textoSuave,
                   ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pixel_pvr/core/theme/pixel_colors.dart';
+import 'package:pixel_pvr/core/theme/pixel_theme.dart';
 
-import '../theme/pixel_colors.dart';
-import '../theme/pixel_theme.dart';
 import 'pixel_box.dart';
 
 /// Botón tipo arcade: al presionarlo se "hunde" (se mueve y pierde sombra).

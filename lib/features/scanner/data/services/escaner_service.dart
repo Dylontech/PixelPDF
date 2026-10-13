@@ -37,7 +37,7 @@ class NativoEscanerService implements EscanerService {
     } on CunningDocumentScannerException catch (e) {
       // El plugin informa del rechazo de cámara con este código.
       throw EscanerExcepcion(
-        e.message ?? 'Fallo del escáner',
+        e.message,
         permisoDenegado: e.code == 'permission_denied',
       );
     }

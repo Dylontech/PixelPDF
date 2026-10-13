@@ -14,7 +14,7 @@ class PixelTheme {
   static TextStyle titulo({
     double size = 12,
     Color color = PixelColors.texto,
-  }) => GoogleFonts.pressStart2P(fontSize: size, color: color, height: 1.4);
+  }) => GoogleFonts.pressStart2p(fontSize: size, color: color, height: 1.4);
 
   /// Estilo para texto de lectura (VT323, más legible en tamaños medios).
   static TextStyle cuerpo({

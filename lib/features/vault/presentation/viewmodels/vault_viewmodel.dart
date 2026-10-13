@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
-
-import '../../domain/entities/documento_escaneado.dart';
-import '../../domain/repositories/documento_repository.dart';
+import 'package:pixel_pvr/features/vault/domain/entities/documento_escaneado.dart';
+import 'package:pixel_pvr/features/vault/domain/repositories/documento_repository.dart';
 
 class VaultViewModel extends ChangeNotifier {
   VaultViewModel(this._repositorio);
