@@ -16,20 +16,21 @@ import 'package:provider/provider.dart';
 
 import '../../soporte/fakes.dart';
 
-Widget _app(FakeDocumentoRepository repo) => MultiProvider(
-  providers: [
-    ChangeNotifierProvider<VaultViewModel>(
-      create: (_) => VaultViewModel(repo)..cargar(),
-    ),
-    Provider<EscanerService>(create: (_) => FakeEscanerService()),
-    Provider<CompartirService>(create: (_) => const CompartirService()),
-  ],
-  child: MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: PixelTheme.build(),
-    home: const VaultPage(),
-  ),
-);
+Widget _app(FakeDocumentoRepository repo, {EscanerService? escaner}) =>
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<VaultViewModel>(
+          create: (_) => VaultViewModel(repo)..cargar(),
+        ),
+        Provider<EscanerService>(create: (_) => escaner ?? FakeEscanerService()),
+        Provider<CompartirService>(create: (_) => const CompartirService()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: PixelTheme.build(),
+        home: const VaultPage(),
+      ),
+    );
 
 /// Fija un tamaño de pantalla de teléfono: con el viewport por defecto
 /// (800x600) la tarjeta es tan alta que el nombre cae fuera y no se puede tocar.
@@ -162,5 +163,43 @@ void main() {
 
     expect(find.text('GAME OVER'), findsOneWidget);
     expect(find.text('REINTENTAR'), findsOneWidget);
+  });
+
+  testWidgets('si el escáner falla se ve el motivo real, no un genérico', (
+    tester,
+  ) async {
+    _pantallaDeTelefono(tester);
+    await tester.pumpWidget(
+      _app(
+        FakeDocumentoRepository(),
+        escaner: FakeEscanerService(
+          error: const EscanerExcepcion('ML Kit no disponible'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(PixelFab));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('ML Kit no disponible'), findsOneWidget);
+  });
+
+  testWidgets('un permiso denegado explica cómo activarlo', (tester) async {
+    _pantallaDeTelefono(tester);
+    await tester.pumpWidget(
+      _app(
+        FakeDocumentoRepository(),
+        escaner: FakeEscanerService(
+          error: const EscanerExcepcion('denied', permisoDenegado: true),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(PixelFab));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Activalo en Ajustes'), findsOneWidget);
   });
 }

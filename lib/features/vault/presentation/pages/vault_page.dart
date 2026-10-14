@@ -85,14 +85,17 @@ class VaultPage extends StatelessWidget {
         SnackBar(
           content: Text(
             e.permisoDenegado
-                ? 'PERMISO DE CAMARA DENEGADO'
-                : 'NO SE PUDO ABRIR LA CAMARA',
+                ? 'PERMISO DE CAMARA DENEGADO\nActivalo en Ajustes > Apps > '
+                      'PixelPDF > Permisos'
+                : 'NO SE PUDO ABRIR LA CAMARA\n${e.mensaje}',
           ),
         ),
       );
-    } catch (_) {
+    } catch (e) {
+      // Se muestra el motivo real: un mensaje genérico deja el fallo
+      // indiagnosticable (ni el usuario ni yo podemos saber qué pasó).
       messenger.showSnackBar(
-        const SnackBar(content: Text('NO SE PUDO ABRIR LA CAMARA')),
+        SnackBar(content: Text('NO SE PUDO ABRIR LA CAMARA\n$e')),
       );
     }
   }

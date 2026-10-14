@@ -1,4 +1,5 @@
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
+import 'package:flutter/services.dart' show MissingPluginException, PlatformException;
 
 /// Abstracción del escáner: permite cambiar el motor (ML Kit, OpenCV, etc.)
 /// sin afectar presentación ni dominio.
@@ -39,6 +40,19 @@ class NativoEscanerService implements EscanerService {
       throw EscanerExcepcion(
         e.message,
         permisoDenegado: e.code == 'permission_denied',
+      );
+    } on PlatformException catch (e) {
+      // Errores del lado nativo (ML Kit, Play Services, permisos...). Si no se
+      // traducen, la UI solo puede decir "no se pudo abrir la cámara" y el
+      // motivo real se pierde.
+      throw EscanerExcepcion(
+        e.message ?? e.code,
+        permisoDenegado: e.code.toLowerCase().contains('permission'),
+      );
+    } on MissingPluginException {
+      // Sintoma tipico de una build de release con el plugin no disponible.
+      throw const EscanerExcepcion(
+        'El escaner nativo no esta disponible en esta instalacion',
       );
     }
   }

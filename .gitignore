@@ -27,3 +27,5 @@ ios/Flutter/flutter_export_environment.sh
 !.vscode/launch.json
 *.swp
 .DS_Store
+# Widget Preview related
+.widget_preview/

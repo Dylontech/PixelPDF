@@ -34,6 +34,14 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+
+            // El escáner (cunning_document_scanner -> ML Kit / Play Services) no
+            // trae reglas de ProGuard. Con R8 activado la app compila, pero en el
+            // dispositivo falla al abrir la cámara; en debug (sin R8) funciona.
+            // Se desactiva la minificación hasta validar un juego de reglas
+            // `-keep` en un teléfono real.
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 }
