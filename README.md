@@ -18,7 +18,7 @@ está en [`PIXEL_PDF_ANOTACIONES.md`](PIXEL_PDF_ANOTACIONES.md).
 | Dependencias (`pubspec.yaml`) y fuentes en `assets/fonts/` | ✅ listo |
 | Esqueleto de plataformas (`android/`, `ios/`) | ✅ generado |
 | `flutter analyze` | ✅ **No issues found!** |
-| `flutter test` | ✅ **72 tests, todos en verde** |
+| `flutter test` | ✅ **75 tests, todos en verde** |
 | `flutter build apk --debug` | ✅ APK generado (170 MB) |
 | Prueba en dispositivo físico | ⏳ requiere conectar un teléfono |
 | iOS | ⏳ solo configuración (compilar requiere macOS) |
@@ -32,18 +32,21 @@ el permiso de cámara, la etiqueta «PixelPDF» y la actividad de uCrop.
 
 ## Firmar PDFs y añadir texto
 
-Dos pantallas nuevas, accesibles desde el menú de la cabecera del vault (`☰`) y
-desde **Ajustes**:
+Dos pantallas nuevas, accesibles desde el menú de la cabecera del vault (`☰`):
 
 | Pantalla | Para qué sirve |
 |----------|----------------|
 | **Firma + texto** (`AnotarPage`) | Abre un PDF (del vault o del teléfono) o una imagen, permite firmar con el dedo o con una imagen de firma y añadir cuadros de texto. |
 | **Acerca de** (`AcercaDePage`) | Explica que la app se creó con IA, lista sus funciones, agradece a los paquetes usados y enlaza a `todopdf.dylontech.com` y `www.dylontech.com`. |
 
+El menú del vault tiene **FIRMAR UN PDF** (elige un PDF del teléfono),
+**AJUSTES** —reservado para opciones futuras, hoy sólo muestra la versión y el
+acceso a *Acerca de*— y **ACERCA DE**.
+
 Cómo funciona:
 
-- Cada documento del vault tiene la acción **ANOTAR** en su menú (pulsar la
-  tarjeta) y en **Ajustes** se puede elegir un PDF del teléfono.
+- Se firma desde el menú (**FIRMAR UN PDF**) o desde la acción **ANOTAR** de
+  cada documento del vault (pulsar la tarjeta).
 - Las anotaciones se guardan con **coordenadas normalizadas** (0..1), así que se
   ven y se exportan igual en cualquier tamaño de pantalla.
 - Cada anotación se puede mover, redimensionar y borrar; **Deshacer** está en la
@@ -105,7 +108,7 @@ Después (el build necesita las variables de entorno del apartado de notas):
 
 ```bash
 flutter analyze          # ya en 0 issues
-flutter test             # 72 tests
+flutter test             # 75 tests
 flutter build apk --debug
 flutter run -d <dispositivo>   # con un teléfono conectado por USB
 ```

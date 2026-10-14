@@ -1,5 +1,6 @@
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
-import 'package:flutter/services.dart' show MissingPluginException, PlatformException;
+import 'package:flutter/services.dart'
+    show MissingPluginException, PlatformException;
 
 /// Abstracción del escáner: permite cambiar el motor (ML Kit, OpenCV, etc.)
 /// sin afectar presentación ni dominio.

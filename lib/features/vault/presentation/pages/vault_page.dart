@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pixel_pvr/core/pixel_assets.dart';
+import 'package:pixel_pvr/core/services/archivos_service.dart';
 import 'package:pixel_pvr/core/services/compartir_service.dart';
 import 'package:pixel_pvr/core/theme/pixel_colors.dart';
 import 'package:pixel_pvr/core/theme/pixel_theme.dart';
@@ -23,14 +24,56 @@ import 'package:provider/provider.dart';
 class VaultPage extends StatelessWidget {
   const VaultPage({super.key});
 
+  /// Elige un PDF del teléfono y abre la pantalla de firma y texto.
+  Future<void> _firmarPdf(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+    final archivos = context.read<ArchivosService>();
+
+    try {
+      final archivo = await archivos.elegir(
+        extensiones: ['pdf'],
+        titulo: 'Elige un PDF para firmar',
+      );
+      if (archivo == null) return; // el usuario canceló
+
+      await navigator.push(
+        MaterialPageRoute<void>(
+          builder: (_) => AnotarPage(
+            fuente: FuenteDocumento.deBytes(
+              nombre: archivo.nombre,
+              formato: FormatoEntrada.pdf,
+              bytes: archivo.bytes,
+            ),
+          ),
+        ),
+      );
+    } catch (e) {
+      messenger.showSnackBar(
+        SnackBar(content: Text('NO SE PUDO ABRIR EL SELECTOR DE ARCHIVOS\n$e')),
+      );
+    }
+  }
+
   /// Menú de la cabecera: lo que no cabe en la pantalla del vault.
   Future<void> _abrirMenuPrincipal(BuildContext context) async {
     await mostrarPixelDialogo(
       context,
       titulo: 'MENU',
       colorTitulo: PixelColors.cian,
-      mensaje: 'Firma un PDF, revisa los ajustes o la informacion de la app.',
+      mensaje:
+          'Firma un PDF del telefono, revisa los ajustes o la informacion de '
+          'la app.',
       acciones: [
+        PixelButton(
+          label: 'FIRMAR UN PDF',
+          icon: Icons.draw,
+          color: PixelColors.verde,
+          onPressed: () {
+            Navigator.of(context).pop();
+            _firmarPdf(context);
+          },
+        ),
         PixelButton(
           label: 'AJUSTES',
           icon: Icons.settings,

@@ -22,7 +22,9 @@ Widget _app(FakeDocumentoRepository repo, {EscanerService? escaner}) =>
         ChangeNotifierProvider<VaultViewModel>(
           create: (_) => VaultViewModel(repo)..cargar(),
         ),
-        Provider<EscanerService>(create: (_) => escaner ?? FakeEscanerService()),
+        Provider<EscanerService>(
+          create: (_) => escaner ?? FakeEscanerService(),
+        ),
         Provider<CompartirService>(create: (_) => const CompartirService()),
       ],
       child: MaterialApp(
@@ -132,6 +134,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('MENU'), findsOneWidget);
+    expect(find.text('FIRMAR UN PDF'), findsOneWidget);
     expect(find.text('AJUSTES'), findsOneWidget);
     expect(find.text('ACERCA DE'), findsOneWidget);
   });
