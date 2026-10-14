@@ -13,12 +13,12 @@ está en [`PIXEL_PDF_ANOTACIONES.md`](PIXEL_PDF_ANOTACIONES.md).
 
 | Parte | Estado |
 |-------|--------|
-| Código de la app (`lib/`, 23 archivos por feature y capa) | ✅ escrito |
-| Pruebas (`test/`, 6 archivos) | ✅ escritas |
+| Código de la app (`lib/`, por feature y capa) | ✅ escrito |
+| Pruebas (`test/`, 11 archivos) | ✅ escritas |
 | Dependencias (`pubspec.yaml`) y fuentes en `assets/fonts/` | ✅ listo |
 | Esqueleto de plataformas (`android/`, `ios/`) | ✅ generado |
 | `flutter analyze` | ✅ **No issues found!** |
-| `flutter test` | ✅ **36 tests, todos en verde** |
+| `flutter test` | ✅ **72 tests, todos en verde** |
 | `flutter build apk --debug` | ✅ APK generado (170 MB) |
 | Prueba en dispositivo físico | ⏳ requiere conectar un teléfono |
 | iOS | ⏳ solo configuración (compilar requiere macOS) |
@@ -27,6 +27,39 @@ Entorno con el que se verificó: **Flutter 3.47.7 stable**, Android SDK 36.0.0
 (plataforma `android-36` + `build-tools 36.0.0`), Java 21.
 El manifiesto dentro del APK confirma `minSdkVersion 24`, `targetSdkVersion 36`,
 el permiso de cámara, la etiqueta «PixelPDF» y la actividad de uCrop.
+
+---
+
+## Firmar PDFs y añadir texto
+
+Dos pantallas nuevas, accesibles desde el menú de la cabecera del vault (`☰`) y
+desde **Ajustes**:
+
+| Pantalla | Para qué sirve |
+|----------|----------------|
+| **Firma + texto** (`AnotarPage`) | Abre un PDF (del vault o del teléfono) o una imagen, permite firmar con el dedo o con una imagen de firma y añadir cuadros de texto. |
+| **Acerca de** (`AcercaDePage`) | Explica que la app se creó con IA, lista sus funciones, agradece a los paquetes usados y enlaza a `todopdf.dylontech.com` y `www.dylontech.com`. |
+
+Cómo funciona:
+
+- Cada documento del vault tiene la acción **ANOTAR** en su menú (pulsar la
+  tarjeta) y en **Ajustes** se puede elegir un PDF del teléfono.
+- Las anotaciones se guardan con **coordenadas normalizadas** (0..1), así que se
+  ven y se exportan igual en cualquier tamaño de pantalla.
+- Cada anotación se puede mover, redimensionar y borrar; **Deshacer** está en la
+  barra superior.
+- Al guardar se crea **siempre un documento nuevo** en el vault: el original no
+  se toca.
+
+> ⚠️ **Limitación conocida:** la firma es **visual**, no un certificado digital
+> con validez legal. Además, al exportar, las páginas se insertan como imagen,
+> por lo que el PDF resultante pierde el texto seleccionable del original. Es el
+> precio de que funcione con cualquier PDF y de que la vista previa coincida con
+> el archivo guardado.
+
+Dependencias añadidas para esto: `printing` (rasteriza las páginas del PDF con el
+motor del sistema), `file_picker` (elegir el PDF o la imagen de firma) y
+`url_launcher` (abrir los enlaces de *Acerca de*).
 
 ---
 
@@ -72,7 +105,7 @@ Después (el build necesita las variables de entorno del apartado de notas):
 
 ```bash
 flutter analyze          # ya en 0 issues
-flutter test             # 36 tests
+flutter test             # 72 tests
 flutter build apk --debug
 flutter run -d <dispositivo>   # con un teléfono conectado por USB
 ```

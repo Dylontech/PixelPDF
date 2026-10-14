@@ -10,14 +10,60 @@ import 'package:pixel_pvr/core/widgets/pixel_box.dart';
 import 'package:pixel_pvr/core/widgets/pixel_button.dart';
 import 'package:pixel_pvr/core/widgets/pixel_dialog.dart';
 import 'package:pixel_pvr/core/widgets/pixel_fab.dart';
+import 'package:pixel_pvr/features/about/presentation/pages/acerca_de_page.dart';
+import 'package:pixel_pvr/features/annotate/domain/entities/fuente_documento.dart';
+import 'package:pixel_pvr/features/annotate/presentation/pages/anotar_page.dart';
 import 'package:pixel_pvr/features/editor/presentation/pages/editor_page.dart';
 import 'package:pixel_pvr/features/scanner/data/services/escaner_service.dart';
+import 'package:pixel_pvr/features/settings/presentation/pages/ajustes_page.dart';
 import 'package:pixel_pvr/features/vault/domain/entities/documento_escaneado.dart';
 import 'package:pixel_pvr/features/vault/presentation/viewmodels/vault_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class VaultPage extends StatelessWidget {
   const VaultPage({super.key});
+
+  /// Menú de la cabecera: lo que no cabe en la pantalla del vault.
+  Future<void> _abrirMenuPrincipal(BuildContext context) async {
+    await mostrarPixelDialogo(
+      context,
+      titulo: 'MENU',
+      colorTitulo: PixelColors.cian,
+      mensaje: 'Firma un PDF, revisa los ajustes o la informacion de la app.',
+      acciones: [
+        PixelButton(
+          label: 'AJUSTES',
+          icon: Icons.settings,
+          color: PixelColors.amarillo,
+          onPressed: () {
+            final navigator = Navigator.of(context);
+            navigator.pop();
+            navigator.push(
+              MaterialPageRoute<void>(builder: (_) => const AjustesPage()),
+            );
+          },
+        ),
+        PixelButton(
+          label: 'ACERCA DE',
+          icon: Icons.info_outline,
+          color: PixelColors.cian,
+          onPressed: () {
+            final navigator = Navigator.of(context);
+            navigator.pop();
+            navigator.push(
+              MaterialPageRoute<void>(builder: (_) => const AcercaDePage()),
+            );
+          },
+        ),
+        PixelButton(
+          label: 'CERRAR',
+          color: PixelColors.superficieAlta,
+          textColor: PixelColors.texto,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ],
+    );
+  }
 
   Future<void> _escanear(BuildContext context) async {
     // Se capturan antes del await: el context puede haberse desmontado cuando
@@ -67,6 +113,13 @@ class VaultPage extends StatelessWidget {
             filterQuality: FilterQuality.none,
           ),
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Menu',
+            icon: const Icon(Icons.menu),
+            onPressed: () => _abrirMenuPrincipal(context),
+          ),
+        ],
       ),
       floatingActionButton: PixelFab(onPressed: () => _escanear(context)),
       body: SafeArea(
@@ -225,6 +278,28 @@ class _TarjetaDocumento extends StatelessWidget {
       mensaje:
           '${doc.nombre}\n${doc.formato.etiqueta} · ${formatearTamano(doc.tamanoBytes)}',
       acciones: [
+        PixelButton(
+          label: 'ANOTAR',
+          icon: Icons.draw,
+          color: PixelColors.verde,
+          onPressed: () async {
+            final navigator = Navigator.of(context);
+            navigator.pop();
+            await navigator.push(
+              MaterialPageRoute<void>(
+                builder: (_) => AnotarPage(
+                  fuente: FuenteDocumento.deRuta(
+                    nombre: doc.nombre,
+                    ruta: doc.rutaArchivo,
+                    formato: doc.formato == FormatoExportacion.pdf
+                        ? FormatoEntrada.pdf
+                        : FormatoEntrada.imagen,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
         PixelButton(
           label: 'COMPARTIR',
           icon: Icons.share,

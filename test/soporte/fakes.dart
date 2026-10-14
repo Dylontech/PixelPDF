@@ -1,7 +1,16 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:flutter/widgets.dart' show Offset;
+import 'package:image/image.dart' as img;
+import 'package:pixel_pvr/core/services/archivos_service.dart';
+import 'package:pixel_pvr/core/services/enlaces_service.dart';
 import 'package:pixel_pvr/core/services/file_storage_service.dart';
+import 'package:pixel_pvr/features/annotate/data/services/firma_service.dart';
+import 'package:pixel_pvr/features/annotate/data/services/fuente_documento_service.dart';
+import 'package:pixel_pvr/features/annotate/data/services/pdf_anotado_service.dart';
+import 'package:pixel_pvr/features/annotate/domain/entities/anotacion.dart';
+import 'package:pixel_pvr/features/annotate/domain/entities/pagina_documento.dart';
 import 'package:pixel_pvr/features/editor/data/services/image_processing_service.dart';
 import 'package:pixel_pvr/features/export/data/services/pdf_export_service.dart';
 import 'package:pixel_pvr/features/scanner/data/services/escaner_service.dart';
@@ -58,6 +67,9 @@ class FakeImageProcessingService extends ImageProcessingService {
   final List<FiltroImagen> filtrosPedidos = [];
   bool fallaAplicando = false;
 
+  /// Últimos bytes que recibió `miniatura`, para comprobar de dónde salen.
+  List<int> bytesMiniatura = const [];
+
   @override
   Future<Uint8List> aplicarFiltro(
     Uint8List bytes,
@@ -83,8 +95,10 @@ class FakeImageProcessingService extends ImageProcessingService {
   }
 
   @override
-  Future<Uint8List> miniatura(Uint8List bytes) async =>
-      Uint8List.fromList(bytes);
+  Future<Uint8List> miniatura(Uint8List bytes) async {
+    bytesMiniatura = bytes;
+    return Uint8List.fromList(bytes);
+  }
 }
 
 class FakePdfExportService extends PdfExportService {
@@ -118,5 +132,115 @@ class FakeEscanerService implements EscanerService {
     llamadas++;
     if (error != null) throw error!;
     return ruta;
+  }
+}
+
+/// PNG real (no bytes arbitrarios) para que `Image.memory` pueda pintarlo.
+Uint8List pngFalso({int ancho = 30, int alto = 40}) =>
+    Uint8List.fromList(img.encodePng(img.Image(width: ancho, height: alto)));
+
+PaginaDocumento paginaFalsa({int ancho = 30, int alto = 40}) => PaginaDocumento(
+  png: pngFalso(ancho: ancho, alto: alto),
+  ancho: ancho,
+  alto: alto,
+);
+
+class FakeFuenteDocumentoService extends FuenteDocumentoService {
+  FakeFuenteDocumentoService({this.paginas = const [], this.error});
+
+  final List<PaginaDocumento> paginas;
+  final Object? error;
+
+  int llamadasPdf = 0;
+  int llamadasImagen = 0;
+
+  @override
+  Future<List<PaginaDocumento>> desdePdf(Uint8List bytes) async {
+    llamadasPdf++;
+    if (error != null) throw error!;
+    return paginas;
+  }
+
+  @override
+  Future<List<PaginaDocumento>> desdeImagen(Uint8List bytes) async {
+    llamadasImagen++;
+    if (error != null) throw error!;
+    return paginas;
+  }
+}
+
+class FakeFirmaService extends FirmaService {
+  FakeFirmaService({Uint8List? png})
+    : png = png ?? Uint8List.fromList(pngFalso());
+
+  final Uint8List png;
+  int rasterizados = 0;
+  int importadas = 0;
+
+  @override
+  Future<FirmaRasterizada?> rasterizar(
+    List<List<Offset>> trazos, {
+    int anchoSalida = 900,
+  }) async {
+    if (trazos.isEmpty) return null;
+    rasterizados++;
+    return FirmaRasterizada(png: png, ancho: 100, alto: 50);
+  }
+
+  @override
+  Future<FirmaRasterizada> normalizarImagen(Uint8List bytes) async {
+    importadas++;
+    return FirmaRasterizada(png: png, ancho: 100, alto: 50);
+  }
+}
+
+class FakePdfAnotadoService extends PdfAnotadoService {
+  int llamadas = 0;
+  List<PaginaDocumento> ultimasPaginas = const [];
+  List<Anotacion> ultimasAnotaciones = const [];
+
+  /// Si se indica, `componer` lo lanza (simula un fallo al guardar).
+  Object? error;
+
+  @override
+  Future<Uint8List> componer({
+    required List<PaginaDocumento> paginas,
+    required List<Anotacion> anotaciones,
+    required String titulo,
+  }) async {
+    if (error != null) throw error!;
+    llamadas++;
+    ultimasPaginas = paginas;
+    ultimasAnotaciones = anotaciones;
+    // Cabecera "%PDF-" para que el tamaño sea reconocible: 5 bytes.
+    return Uint8List.fromList([0x25, 0x50, 0x44, 0x46, 0x2D]);
+  }
+}
+
+class FakeEnlacesService extends EnlacesService {
+  final List<String> abiertos = [];
+  bool exito = true;
+
+  @override
+  Future<bool> abrir(String url) async {
+    abiertos.add(url);
+    return exito;
+  }
+}
+
+class FakeArchivosService extends ArchivosService {
+  FakeArchivosService({this.archivo});
+
+  /// Lo que devuelve el selector; `null` equivale a "el usuario canceló".
+  ArchivoElegido? archivo;
+  int llamadas = 0;
+
+  @override
+  Future<ArchivoElegido?> elegir({
+    required List<String> extensiones,
+    required String titulo,
+  }) async {
+    llamadas++;
+    return archivo;
   }
 }

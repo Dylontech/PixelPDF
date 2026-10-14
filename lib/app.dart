@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:pixel_pvr/core/services/archivos_service.dart';
 import 'package:pixel_pvr/core/services/compartir_service.dart';
+import 'package:pixel_pvr/core/services/enlaces_service.dart';
 import 'package:pixel_pvr/core/services/file_storage_service.dart';
 import 'package:pixel_pvr/core/theme/pixel_theme.dart';
+import 'package:pixel_pvr/features/annotate/data/services/firma_service.dart';
+import 'package:pixel_pvr/features/annotate/data/services/fuente_documento_service.dart';
+import 'package:pixel_pvr/features/annotate/data/services/pdf_anotado_service.dart';
+import 'package:pixel_pvr/features/annotate/domain/usecases/exportar_documento_anotado.dart';
 import 'package:pixel_pvr/features/editor/data/services/image_processing_service.dart';
 import 'package:pixel_pvr/features/export/data/services/pdf_export_service.dart';
 import 'package:pixel_pvr/features/export/domain/usecases/exportar_documento.dart';
@@ -31,6 +37,15 @@ class PixelPvrApp extends StatelessWidget {
         Provider<PdfExportService>(create: (_) => PdfExportService()),
         Provider<EscanerService>(create: (_) => NativoEscanerService()),
         Provider<CompartirService>(create: (_) => const CompartirService()),
+        Provider<EnlacesService>(create: (_) => const EnlacesService()),
+        Provider<ArchivosService>(create: (_) => const ArchivosService()),
+
+        // Firma y anotaciones
+        Provider<FuenteDocumentoService>(
+          create: (_) => const FuenteDocumentoService(),
+        ),
+        Provider<FirmaService>(create: (_) => const FirmaService()),
+        Provider<PdfAnotadoService>(create: (_) => const PdfAnotadoService()),
 
         // Repositorio (punto de extensión para Firebase en el futuro)
         Provider<DocumentoRepository>(
@@ -47,6 +62,14 @@ class PixelPvrApp extends StatelessWidget {
             almacenamiento: c.read<FileStorageService>(),
             imagen: c.read<ImageProcessingService>(),
             pdf: c.read<PdfExportService>(),
+          ),
+        ),
+        Provider<ExportarDocumentoAnotado>(
+          create: (c) => ExportarDocumentoAnotado(
+            repositorio: c.read<DocumentoRepository>(),
+            almacenamiento: c.read<FileStorageService>(),
+            imagen: c.read<ImageProcessingService>(),
+            pdf: c.read<PdfAnotadoService>(),
           ),
         ),
 

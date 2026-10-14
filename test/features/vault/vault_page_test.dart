@@ -115,8 +115,24 @@ void main() {
 
     expect(find.text('OPCIONES'), findsOneWidget);
     expect(find.text('COMPARTIR'), findsOneWidget);
+    expect(find.text('ANOTAR'), findsOneWidget);
     expect(find.text('BORRAR'), findsOneWidget);
     expect(find.text('CERRAR'), findsOneWidget);
+  });
+
+  testWidgets('el menú de la cabecera ofrece ajustes y acerca de', (
+    tester,
+  ) async {
+    _pantallaDeTelefono(tester);
+    await tester.pumpWidget(_app(FakeDocumentoRepository()));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.menu));
+    await tester.pumpAndSettle();
+
+    expect(find.text('MENU'), findsOneWidget);
+    expect(find.text('AJUSTES'), findsOneWidget);
+    expect(find.text('ACERCA DE'), findsOneWidget);
   });
 
   testWidgets('BORRAR quita la tarjeta del vault', (tester) async {
